@@ -1,0 +1,26 @@
+<!-- popup.html -->
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Website Time Tracker</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <h3 id="current-date"></h3>
+  <div id="navigation">
+    <button id="prev-day">&lt; Previous Day</button>
+    <button id="next-day">Next Day &gt;</button>
+  </div>
+  <h3 id="total-time">Total time: 0h 0m 0s</h3>
+  <canvas id="timeChart"></canvas>
+  <canvas id="timeChartPerSite"></canvas>
+  <ul id="time-list"></ul>
+  <div id="buttons">
+    <button id="clearData">Clear Data</button>
+    <button id="exportData">Export Data</button>
+    <button id="resetSettings">Reset Settings</button>
+  </div>
+  <script src="libs/chart.umd.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

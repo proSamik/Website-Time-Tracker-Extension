@@ -1,0 +1,26 @@
+/* styles.css */
+body {
+	font-family: Arial, sans-serif;
+	width: 300px;
+	margin: 0;
+	padding: 10px;
+}
+h1 {
+	font-size: 18px;
+	margin-bottom: 10px;
+}
+
+#time-list {
+	list-style-type: none;
+	padding: 0;
+}
+
+#time-list li {
+	padding: 5px 0;
+	border-bottom: 1px solid #ccc;
+}
+
+#timeChart {
+	max-width: 100%;
+	margin: 0 auto;
+}
