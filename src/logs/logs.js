@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const logDateInput = document.getElementById('log-date');
     const moveSelectedButton = document.getElementById('move-selected');
     const moveCategorySelect = document.getElementById('move-category');
+    const goToPreferencesButton = document.getElementById('go-to-preferences'); 
+
 
     // Initialize date input to today's date
     const today = new Date().toISOString().split('T')[0];
@@ -30,6 +32,11 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         moveSelectedLogs(selectedCategory);
+    });
+
+     // Event listener for "Manage Preferences" button to navigate to preferences.html
+     goToPreferencesButton.addEventListener('click', () => {
+        window.location.href = 'preferences.html';  // Navigate to the preferences page
     });
 });
 

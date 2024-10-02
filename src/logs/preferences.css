@@ -1,0 +1,124 @@
+/* src/logs/preferences.css */
+
+/* Import existing logs.css styles */
+@import url('logs.css');
+
+/* Additional styles for preferences */
+
+.navigation {
+    margin-top: 10px;
+}
+
+.navigation button {
+    padding: 8px 12px;
+    background-color: #2C4E80; /* Blue */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.navigation button:hover {
+    background-color: #1a3d63; /* Darker Blue on hover */
+}
+
+.preferences-container {
+    padding: 20px;
+}
+
+.preferences-container h2 {
+    color: #00215E; /* Navy Blue */
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.preferences-controls {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.preferences-controls button {
+    padding: 8px 12px;
+    background-color: #FC4100; /* Orange */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.preferences-controls button:hover {
+    background-color: #c73700; /* Darker Orange on hover */
+}
+
+.preferences-lists {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: space-around;
+}
+
+.category-list {
+    flex: 1 1 200px;
+    background-color: white;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    max-width: 100%;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.category-list h3 {
+    margin-top: 0;
+    color: #00215E; /* Navy Blue */
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.preference-list {
+    list-style-type: none;
+    padding-left: 0;
+    max-height: 40vh;
+    overflow-y: auto;
+}
+
+.preference-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    border-bottom: 1px solid #eee;
+}
+
+.preference-item:last-child {
+    border-bottom: none;
+}
+
+.preference-item input[type="checkbox"] {
+    margin-right: 10px;
+    cursor: pointer;
+}
+
+.preference-url {
+    flex: 1;
+    text-decoration: none;
+    color: #00215E; /* Navy Blue */
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding-right: 10px;
+}
+
+.preference-url:hover {
+    text-decoration: underline;
+    color: #FC4100; /* Orange on hover */
+}
+
+.no-preferences {
+    text-align: center;
+    color: #666;
+    padding: 20px 0;
+}

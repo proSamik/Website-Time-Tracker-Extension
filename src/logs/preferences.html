@@ -1,0 +1,52 @@
+<!-- src/logs/preferences.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Category Preferences - Website Time Tracker</title>
+    <link rel="stylesheet" href="preferences.css">
+</head>
+<body>
+    <div class="header-container">
+        <h1>Category Preferences</h1>
+        <div class="navigation">
+            <button id="go-to-logs">Go to Daily Logs</button>
+        </div>
+    </div>
+    
+    <div class="preferences-container">
+        <h2>Manage Category Preferences</h2>
+        <div class="preferences-controls">
+            <button id="delete-selected">Delete Selected</button>
+        </div>
+        <div class="preferences-lists">
+            <div class="category-list" id="urls-list-container">
+                <h3>URLs</h3>
+                <ul class="preference-list" id="urls-list">
+                    <!-- URLs will be populated here -->
+                </ul>
+            </div>
+            <div class="category-list" id="exactDomains-list-container">
+                <h3>Exact Domains</h3>
+                <ul class="preference-list" id="exactDomains-list">
+                    <!-- Exact Domains will be populated here -->
+                </ul>
+            </div>
+            <div class="category-list" id="subdomains-list-container">
+                <h3>Subdomains</h3>
+                <ul class="preference-list" id="subdomains-list">
+                    <!-- Subdomains will be populated here -->
+                </ul>
+            </div>
+            <div class="category-list" id="rootDomains-list-container">
+                <h3>Root Domains</h3>
+                <ul class="preference-list" id="rootDomains-list">
+                    <!-- Root Domains will be populated here -->
+                </ul>
+            </div>
+        </div>
+    </div>
+    
+    <script src="preferences.js"></script>
+</body>
+</html>

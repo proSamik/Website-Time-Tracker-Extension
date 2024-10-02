@@ -90,6 +90,13 @@ class UIManager {
 		  e.preventDefault();
 		  chrome.tabs.create({ url: chrome.runtime.getURL("src/logs/logs.html") });
 	  });
+
+	// Event listener for "Manage Category Preferences" link
+	const openCategoryPreferencesLink = document.getElementById('open-category-preferences');
+	openCategoryPreferencesLink.addEventListener('click', (e) => {
+		e.preventDefault();
+		chrome.tabs.create({ url: chrome.runtime.getURL("src/logs/preferences.html") });  // Assuming options.html manages category preferences
+	});
 	}
   
 	updateDisplay() {
