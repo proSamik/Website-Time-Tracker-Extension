@@ -33,9 +33,10 @@ body {
 	margin-bottom: 15px;
 }
 
-.top-buttons-container button {
+.top-buttons-container button, select {
 	flex: 1 1 30%;
 	padding: 6px;
+	margin-bottom: 3px;
 	font-size: 12px;
 	cursor: pointer;
 	border: none;
@@ -44,6 +45,7 @@ body {
 	color: white;
 	transition: background-color 0.3s;
 }
+
 
 .top-buttons-container button:hover {
 	background-color: #c73700; /* Darker Orange on hover */
@@ -65,6 +67,79 @@ body {
 	padding-left: 0;
 }
 
+/* Styles for category table */
+.category-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.category-table th, .category-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+.category-table th {
+    background-color: #f4f4f4;
+    color: #00215E; /* Navy Blue */
+	text-align: center;
+}
+
+.category-table td {
+    color: #00215E; /* Navy Blue */
+}
+
+.category-table .url-cell {
+    max-width: 100px; /* Limit width for URLs */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Add hover effects for URLs */
+.category-table .url-cell:hover {
+    text-decoration: underline;
+    color: #FC4100; /* Orange on hover */
+}
+
+/* Align total row */
+.category-table tr:last-child {
+    font-weight: bold;
+}
+
+/* Styles for Show More and Show Less buttons */
+.category-table .show-more-button,
+.category-table .show-less-button {
+    background-color: #f4f4f4; /* Same as table header */
+    color: #00215E; /* Navy Blue */
+    border: 1px solid #00215E;
+    border-radius: 4px;
+    padding: 5px 10px;
+    cursor: pointer;
+    margin: 0 5px; /* Space between buttons */
+    font-size: 14px;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.category-table .show-more-button:hover,
+.category-table .show-less-button:hover {
+    background-color: #00215E; /* Navy Blue on hover */
+    color: white; /* White text on hover */
+}
+
+/* Center align the button row */
+.category-table tr .show-more-button,
+.category-table tr .show-less-button {
+    display: inline-block;
+}
+
+/* Adjust button cell to center the buttons */
+.category-table tr td[colspan="3"] {
+    text-align: center; /* Center align the buttons */
+    padding: 10px 0; /* Add vertical padding */
+}
+
 .category-section {
 	margin-bottom: 20px;
 }
@@ -78,6 +153,7 @@ body {
 .domain-item {
 	margin-bottom: 5px;
 	color: #00215E; /* Navy Blue */
+	
 }
 
 .subdomains-list {
@@ -199,3 +275,19 @@ body {
 	line-height: 1.5;
 	color: #2C4E80; /* Blue */
 }
+
+button:disabled {
+	background-color: #f4f4f4; /* Light gray background */
+	color: #b0b0b0; /* Light gray text */
+	border: 1px solid #d0d0d0; /* Light gray border */
+	cursor: not-allowed; /* Change cursor to indicate disabled */
+  }
+  
+  button {
+	transition: background-color 0.3s, color 0.3s; /* Smooth transition for hover effects */
+  }
+
+  button:hover:disabled {
+	background-color: #e0e0e0; /* Slightly darker gray on hover */
+  }
+  

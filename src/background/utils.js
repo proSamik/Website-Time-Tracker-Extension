@@ -1,8 +1,10 @@
 // src/background/utils.js
 
 export function getCurrentDate() {
-	const today = new Date();
-	return today.toISOString().split('T')[0];
+	const now = new Date();
+	const localDate = new Date(now.getTime() - (now.getTimezoneOffset() * 60000)).toISOString().split('T')[0];
+	console.log(`getCurrentDate(): Adjusted Local Date is ${localDate}`);
+	return localDate;
   }
   
   export function formatTime(ms) {

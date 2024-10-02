@@ -69,10 +69,10 @@ export class StorageManager {
 	}
   
 	saveTimeData() {
-	  chrome.storage.local.set({ timeData: this.timeData }, () => {
-		console.log("StorageManager: timeData saved:", this.timeData);
-	  });
-	}
+		chrome.storage.local.set({ timeData: this.timeData }, () => {
+		  console.log("StorageManager: timeData saved:", this.timeData);
+		});
+	  }
 }
 
 export default StorageManager;

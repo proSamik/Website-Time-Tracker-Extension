@@ -14,7 +14,15 @@
     <div class="top-buttons-container">
       <button id="prev-day">Previous Day</button>
       <button id="next-day">Next Day</button>
-      <button id="exportData">Export as CSV</button>
+      <div>
+        <select id="exportRange">
+          <option value="day">Day</option>
+          <option value="week">Week</option>
+          <option value="month">Month</option>
+          <option value="year">Year</option>
+        </select>
+        <button id="exportData">Export Data</button>
+      </div>
     </div>
   </div>
 

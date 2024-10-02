@@ -162,6 +162,9 @@ export class TimeTracker {
         category = 'uncategorized';
       }
 
+      // Log the date to ensure it's the correct one
+    console.log(`TimeTracker: Tracking time for date ${date} and URL ${this.currentUrl}`);
+
       // Initialize data structures if undefined
       if (!this.storageManager.timeData[date]) {
         this.storageManager.timeData[date] = {};
@@ -185,11 +188,24 @@ export class TimeTracker {
 
   checkDateChange() {
     const newDate = getCurrentDate();
+    
     if (newDate !== this.currentDate) {
+      console.log(`TimeTracker: Date has changed from ${this.currentDate} to ${newDate}`);
+      
+      // Save the time spent on the previous day before switching to the new date
       this.handleTabInactive();
+      
+      // Ensure the date is now updated properly
       this.currentDate = newDate;
+      
+      // Reset the active tracking state
       this.active = false;
-      console.log(`TimeTracker: Date changed to ${this.currentDate}`);
+      
+      // Log the current time data after the date has changed
+      console.log(`TimeTracker: Tracking reset for the new date ${this.currentDate}`);
+      
+      // Save the updated time data for the new day
+      this.storageManager.saveTimeData();
     }
   }
 
