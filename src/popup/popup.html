@@ -1,33 +1,47 @@
-<!-- popup.html -->
+<!-- src/popup/popup.html -->
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Website Time Tracker</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <title>Time Tracker</title>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-  <h3 id="current-date"></h3>
-  <div id="navigation">
-    <button id="prev-day">&lt; Previous Day</button>
-    <button id="next-day">Next Day &gt;</button>
+  <!-- Header with Date and Top Buttons -->
+  <div class="header-container">
+    <div id="current-date">Date: N/A</div>
+    <div id="total-time">Total time: 0h 0m 0s</div>
+    <div class="top-buttons-container">
+      <button id="prev-day">Previous Day</button>
+      <button id="next-day">Next Day</button>
+      <button id="exportData">Export as CSV</button>
+    </div>
   </div>
-  <h3 id="total-time">Total time: 0h 0m 0s</h3>
-  <canvas id="timeChart"></canvas>
-  <canvas id="timeChartPerSite"></canvas>
-  <ul id="time-list"></ul>
-  <div id="buttons">
+
+  <!-- Pie Charts at the Top -->
+  <div class="charts-container">
+    <canvas id="timeChart"></canvas>
+  </div>
+
+  <!-- List -->
+  <div id="time-list">
+    <li>No data to display.</li>
+  </div>
+
+  <!-- Bottom Buttons -->
+  <div class="bottom-buttons-container">
     <button id="clearData">Clear Data</button>
-    <button id="exportData">Export Data</button>
     <button id="resetSettings">Reset Settings</button>
   </div>
 
-
-  <!-- Include helper classes -->
+  <!-- Script Order Matters -->
+  <script src="colorMapping.js"></script>
   <script src="../libs/chart.umd.js"></script>
-  <script src="popup.js"></script>
   <script src="dataFormatter.js"></script>
-  <script src="storageHandler.js"></script>
   <script src="chartManager.js"></script>
+  <script src="listManager.js"></script>
   <script src="uiManager.js"></script>
+  <script src="storageHandler.js"></script>
+  <script src="popup.js"></script>
 </body>
 </html>

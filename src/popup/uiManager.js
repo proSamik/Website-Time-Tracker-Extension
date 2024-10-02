@@ -1,10 +1,11 @@
 // src/popup/UIManager.js
 
 class UIManager {
-	constructor(dataFormatter, storageHandler, chartManager) {
+	constructor(dataFormatter, storageHandler, chartManager, listManager) {
 	  this.dataFormatter = dataFormatter;
 	  this.storageHandler = storageHandler;
 	  this.chartManager = chartManager;
+	  this.listManager = listManager;
   
 	  this.timeList = document.getElementById("time-list");
 	  this.totalTimeElem = document.getElementById("total-time");
@@ -21,6 +22,9 @@ class UIManager {
 	initialize() {
 	  // Load time data and set up UI
 	  this.storageHandler.loadTimeData((timeData) => {
+		this.dataFormatter.timeData = timeData; // Store timeData in dataFormatter for access in ListManager
+		this.dataFormatter.currentDate = this.currentDate; // Store currentDate in dataFormatter
+  
 		this.availableDates = Object.keys(timeData).sort();
   
 		if (this.availableDates.length > 0) {
@@ -129,89 +133,13 @@ class UIManager {
   
 		  this.totalTimeElem.textContent = `Total time: ${this.dataFormatter.formatTime(totalTime)}`;
   
-		  // Display time per category and sites
-		  for (const [category, timeSpent] of Object.entries(categoryTotals)) {
-			if (timeSpent > 0) {
-			  const percentage = totalTime > 0 ? ((timeSpent / totalTime) * 100).toFixed(2) : 0;
-  
-			  const categoryHeader = document.createElement("h4");
-			  categoryHeader.textContent = `${this.dataFormatter.capitalize(category)}: ${percentage}% (${this.dataFormatter.formatTime(timeSpent)})`;
-			  this.timeList.appendChild(categoryHeader);
-  
-			  const sitesList = document.createElement("ul");
-			  sitesList.style.listStyleType = "none";
-			  sitesList.style.paddingLeft = "10px";
-  
-			  // List sites under this category
-			  const sites = dateData[category];
-			  for (const [site, siteTime] of Object.entries(sites)) {
-				const sitePercentage = timeSpent > 0 ? ((siteTime / timeSpent) * 100).toFixed(2) : 0;
-  
-				const siteItem = document.createElement("li");
-				const siteLink = document.createElement("a");
-				siteLink.href = "#";
-				siteLink.style.textDecoration = "none";
-				siteLink.style.color = "inherit";
-  
-				// Display only the domain name
-				const domainName = this.dataFormatter.getDomainFromUrl(site);
-				siteLink.textContent = `${domainName}: ${sitePercentage}% (${this.dataFormatter.formatTime(siteTime)})`;
-  
-				// Set the full URL as the title attribute for hover tooltip
-				siteLink.title = site;
-  
-				// Click to toggle between domain and full URL
-				let showingFullUrl = false;
-				siteLink.addEventListener("click", (e) => {
-				  e.preventDefault();
-				  showingFullUrl = !showingFullUrl;
-				  if (showingFullUrl) {
-					siteLink.textContent = `${site}: ${sitePercentage}% (${this.dataFormatter.formatTime(siteTime)})`;
-				  } else {
-					siteLink.textContent = `${domainName}: ${sitePercentage}% (${this.dataFormatter.formatTime(siteTime)})`;
-				  }
-				});
-  
-				siteItem.appendChild(siteLink);
-				sitesList.appendChild(siteItem);
-			  }
-			  this.timeList.appendChild(sitesList);
-			}
-		  }
+		  // Render the categorized list using ListManager
+		  this.listManager.renderList(this.timeList, dateData);
   
 		  // Create the category chart
 		  this.chartManager.createTimeChart(categoryTotals);
   
-		  // Prepare data for site chart
-		  const siteLabels = [];
-		  const siteDataPoints = [];
-		  const siteBackgroundColors = [];
-		  const siteBorderColors = [];
-		  const categoryColors = {
-			productive: 'rgba(75, 192, 192, 0.6)',
-			neutral: 'rgba(255, 206, 86, 0.6)',
-			entertainment: 'rgba(255, 99, 132, 0.6)',
-			uncategorized: 'rgba(201, 203, 207, 0.6)',
-		  };
-		  const categoryBorderColors = {
-			productive: 'rgba(75, 192, 192, 1)',
-			neutral: 'rgba(255, 206, 86, 1)',
-			entertainment: 'rgba(255, 99, 132, 1)',
-			uncategorized: 'rgba(201, 203, 207, 1)',
-		  };
-  
-		  for (const [category, sites] of Object.entries(dateData)) {
-			for (const [site, timeSpent] of Object.entries(sites)) {
-			  const domainName = this.dataFormatter.getDomainFromUrl(site);
-			  siteLabels.push(domainName); // Use domain name for labels
-			  siteDataPoints.push(Math.floor(timeSpent / 1000));
-			  siteBackgroundColors.push(categoryColors[category] || 'rgba(201, 203, 207, 0.6)');
-			  siteBorderColors.push(categoryBorderColors[category] || 'rgba(201, 203, 207, 1)');
-			}
-		  }
-  
-		  // Create the site chart
-		  this.chartManager.createTimeChartPerSite(siteLabels, siteDataPoints, siteBackgroundColors, siteBorderColors);
+		  // Removed site chart creation
   
 		} else {
 		  this.totalTimeElem.textContent = 'Total time: 0h 0m 0s';
@@ -261,6 +189,6 @@ class UIManager {
 	}
   }
   
-  // Attach UIManager to the window object
+  // Export the UIManager class
   window.UIManager = UIManager;
   

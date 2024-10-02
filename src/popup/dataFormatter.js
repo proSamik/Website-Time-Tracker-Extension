@@ -1,6 +1,11 @@
 // src/popup/DataFormatter.js
 
 class DataFormatter {
+	constructor() {
+	  this.timeData = {}; // To be populated by UIManager
+	  this.currentDate = new Date(); // To be updated by UIManager
+	}
+  
 	parseStoredDate(dateString) {
 	  const [year, month, day] = dateString.split('-').map(Number);
 	  return new Date(year, month - 1, day);
@@ -31,7 +36,7 @@ class DataFormatter {
 	  let totalSeconds = Math.floor(ms / 1000);
 	  const hours = Math.floor(totalSeconds / 3600);
 	  totalSeconds %= 3600;
-	  const minutes = Math.floor(totalSeconds / 60);
+	  const minutes = Math.floor((totalSeconds % 3600) / 60);
 	  const seconds = totalSeconds % 60;
   
 	  if (hours > 0) {
@@ -48,6 +53,7 @@ class DataFormatter {
 	}
   
 	capitalize(str) {
+	  if (typeof str !== 'string') return '';
 	  return str.charAt(0).toUpperCase() + str.slice(1);
 	}
   
@@ -56,12 +62,27 @@ class DataFormatter {
 		const urlObj = new URL(url);
 		return urlObj.hostname;
 	  } catch (e) {
-		console.error('Invalid URL:', url);
+		console.error('DataFormatter: Invalid URL:', url);
 		return url;
+	  }
+	}
+  
+	getRootDomain(url) {
+	  try {
+		const urlObj = new URL(url);
+		const hostname = urlObj.hostname;
+		const parts = hostname.split('.');
+		if (parts.length > 2) {
+		  return parts.slice(-2).join('.');
+		}
+		return hostname;
+	  } catch (e) {
+		console.error('DataFormatter: Invalid URL for getRootDomain:', url);
+		return '';
 	  }
 	}
   }
   
-  // Make DataFormatter globally accessible
+  // Export the DataFormatter class
   window.DataFormatter = new DataFormatter();
   

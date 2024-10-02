@@ -1,8 +1,9 @@
 // src/content.js
 
 class PromptManager {
-	constructor() {
+	constructor(colorMapping) {
 	  this.promptId = 'time-tracker-prompt';
+	  this.colorMapping = colorMapping; // Use the same color mapping
 	}
   
 	showPrompt(url) {
@@ -148,7 +149,7 @@ class PromptManager {
 		case 'entertainment':
 		  return '#F44336'; // Red
 		default:
-		  return '#607D8B'; // Blue Grey
+		  return '#00BCD4'; // Cyan for Uncategorized
 	  }
 	}
   
@@ -178,7 +179,15 @@ class PromptManager {
 	}
   }
   
-  const promptManager = new PromptManager();
+  // Centralized color mapping (same as ChartManager)
+  const colorMapping = {
+	productive: 'rgba(75, 192, 192, 0.6)',      // Green
+	neutral: 'rgba(255, 206, 86, 0.6)',        // Yellow
+	entertainment: 'rgba(255, 99, 132, 0.6)',  // Red
+	uncategorized: 'rgba(0, 255, 255, 0.6)'    // Cyan
+  };
+  
+  const promptManager = new PromptManager(colorMapping);
   
   chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 	if (request.action === "promptCategorization") {
