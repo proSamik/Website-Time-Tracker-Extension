@@ -106,7 +106,7 @@ body {
 	margin-top: 20px;
 }
 
-.bottom-buttons-container button {
+.bottom-buttons-container button, a {
 	flex: 1 1 45%;
 	padding: 8px;
 	font-size: 14px;

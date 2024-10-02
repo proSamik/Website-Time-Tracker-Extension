@@ -83,6 +83,13 @@ class UIManager {
 	  document.getElementById("exportData").addEventListener("click", () => {
 		this.exportDataAsCSV();
 	  });
+
+	  // Event listener for "Manage Daily Logs" link
+	  const openLogsLink = document.getElementById('open-logs');
+	  openLogsLink.addEventListener('click', (e) => {
+		  e.preventDefault();
+		  chrome.tabs.create({ url: chrome.runtime.getURL("src/logs/logs.html") });
+	  });
 	}
   
 	updateDisplay() {
