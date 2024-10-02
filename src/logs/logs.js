@@ -20,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         loadLogs(selectedDate);
     });
-
+    
     // Load logs on initial load
     loadLogs(today);
 

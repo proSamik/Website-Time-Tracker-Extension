@@ -16,9 +16,39 @@
     
     <div class="preferences-container">
         <h2>Manage Category Preferences</h2>
+        
+        <!-- Add Preference Form -->
+        <div class="add-preference-container">
+            <h3>Add New Preference</h3>
+            <form id="add-preference-form">
+                <textarea id="new-urls" placeholder="URLs/Domains (multiple comma separated)" required></textarea>
+                
+                <select id="new-category" required>
+                    <option value="" disabled selected>Select Category Type</option>
+                    <option value="urls">URLs</option>
+                    <option value="exactDomains">Exact Domains</option>
+                    <option value="subdomains">Subdomains</option>
+                    <option value="rootDomains">Root Domains</option>
+                </select>
+                
+                <select id="assigned-category" required>
+                    <option value="" disabled selected>Select Assigned Category</option>
+                    <option value="neutral">Neutral</option>
+                    <option value="productive">Productive</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="uncategorized">Uncategorized</option>
+                </select>
+                
+                <button type="submit" id="add-preference-button">Add</button>
+            </form>
+        </div>
+        
+        <!-- Delete Selected Preferences -->
         <div class="preferences-controls">
             <button id="delete-selected">Delete Selected</button>
         </div>
+        
+        <!-- Preferences Lists -->
         <div class="preferences-lists">
             <div class="category-list" id="urls-list-container">
                 <h3>URLs</h3>
