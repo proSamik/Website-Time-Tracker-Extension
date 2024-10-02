@@ -6,6 +6,7 @@ class ListManager {
 	  this.colorMapping = colorMapping;
 	  this.displayLimit = 5; // Number of top groups to display initially
 	  this.expandedCategories = {}; // Tracks which categories have been expanded
+	  this.currentCard = null; 
 	}
   
 	/**
@@ -61,7 +62,6 @@ class ListManager {
 		// Category Header
 		const categoryHeader = document.createElement('h3');
 		categoryHeader.textContent = `${this.dataFormatter.capitalize(category)}: ${this.formatPercentage(categoryData)} (${this.dataFormatter.formatTime(this.calculateTotalTime(categoryData))})`;
-		categoryHeader.style.color = this.colorMapping[category] || this.colorMapping['uncategorized'];
 		categorySection.appendChild(categoryHeader);
   
 		// Domains List

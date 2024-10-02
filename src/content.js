@@ -23,7 +23,7 @@ class PromptManager {
 		position: 'fixed',
 		bottom: '20px',
 		right: '20px',
-		backgroundColor: '#fff',
+		backgroundColor: '#ffffff', // Changed to white for better contrast
 		border: '1px solid #ccc',
 		padding: '15px',
 		zIndex: '9999',
@@ -58,7 +58,8 @@ class PromptManager {
 	  message.title = url; // Full URL shown on hover
 	  Object.assign(message.style, {
 		margin: '0 0 10px 0',
-		fontWeight: 'bold'
+		fontWeight: 'bold',
+		color: '#00215E' // Navy Blue for text
 	  });
 	  promptContainer.appendChild(message);
   
@@ -71,7 +72,10 @@ class PromptManager {
 	  const scopeSelect = document.createElement('select');
 	  Object.assign(scopeSelect.style, {
 		width: '100%',
-		marginBottom: '10px'
+		marginBottom: '10px',
+		padding: '5px',
+		borderRadius: '4px',
+		border: '1px solid #ccc'
 	  });
   
 	  const options = [
@@ -113,7 +117,8 @@ class PromptManager {
 		  border: 'none',
 		  borderRadius: '4px',
 		  cursor: 'pointer',
-		  fontSize: '14px'
+		  fontSize: '14px',
+		  transition: 'background-color 0.3s'
 		});
 		button.addEventListener('click', () => {
 		  const selectedScope = scopeSelect.value;
@@ -143,13 +148,13 @@ class PromptManager {
 	categoryButtonColor(category) {
 	  switch (category.toLowerCase()) {
 		case 'productive':
-		  return '#4CAF50'; // Green
+		  return this.colorMapping['productive']; // Orange
 		case 'neutral':
-		  return '#FFC107'; // Amber
+		  return this.colorMapping['neutral']; // Yellow
 		case 'entertainment':
-		  return '#F44336'; // Red
+		  return this.colorMapping['entertainment']; // Navy Blue
 		default:
-		  return '#00BCD4'; // Cyan for Uncategorized
+		  return this.colorMapping['uncategorized']; // Blue
 	  }
 	}
   
@@ -179,12 +184,12 @@ class PromptManager {
 	}
   }
   
-  // Centralized color mapping (same as ChartManager)
-  const colorMapping = {
-	productive: 'rgba(75, 192, 192, 0.6)',      // Green
-	neutral: 'rgba(255, 206, 86, 0.6)',        // Yellow
-	entertainment: 'rgba(255, 99, 132, 0.6)',  // Red
-	uncategorized: 'rgba(0, 255, 255, 0.6)'    // Cyan
+// Centralized color mapping (same as ChartManager)
+const colorMapping = {
+	productive: 'rgba(252, 65, 0, 0.6)',        // #FC4100 - Orange
+	uncategorized : 'rgba(255, 197, 90, 0.6)',         // #FFC55A - Yellow
+	entertainment: 'rgba(44, 78, 128, 0.6)',    // #2C4E80 - Blue (swapped with Uncategorized)
+	neutral: 'rgba(0, 33, 94, 0.6)'       // #00215E - Navy Blue (swapped with Entertainment)
   };
   
   const promptManager = new PromptManager(colorMapping);
@@ -197,4 +202,3 @@ class PromptManager {
 	  // No need to return true since the response is sent synchronously
 	}
   });
-  
