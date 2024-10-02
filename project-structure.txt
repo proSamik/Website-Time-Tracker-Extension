@@ -1,0 +1,39 @@
+.
+|-- LICENSE
+|-- README.md
+|-- manifest.json
+`-- src
+    |-- background
+    |   |-- categorizationManager.js
+    |   |-- index.js
+    |   |-- storageManager.js
+    |   |-- timeTracker.js
+    |   `-- utils.js
+    |-- content.js
+    |-- icons
+    |   |-- icon128.png
+    |   |-- icon16.png
+    |   |-- icon32.png
+    |   `-- icon48.png
+    |-- libs
+    |   `-- chart.umd.js
+    |-- logs
+    |   |-- logs.css
+    |   |-- logs.html
+    |   `-- logs.js
+    |-- options
+    |   |-- options.css
+    |   |-- options.html
+    |   `-- options.js
+    `-- popup
+        |-- chartManager.js
+        |-- colorMapping.js
+        |-- dataFormatter.js
+        |-- listManager.js
+        |-- popup.css
+        |-- popup.html
+        |-- popup.js
+        |-- storageHandler.js
+        `-- uiManager.js
+
+860 directories, 6237 files

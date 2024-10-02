@@ -39,7 +39,10 @@
     "options_page": "src/options/options.html",
     "web_accessible_resources": [
         {
-            "resources": ["src/logs/logs.html"],
+            "resources": [
+                "src/logs/logs.html",
+                "src/logs/preferences.html"
+            ],
             "matches": ["<all_urls>"]
         }
     ],
