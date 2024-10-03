@@ -52,15 +52,15 @@ class UIManager {
   
 	  // Event listeners for navigation buttons
 	  	  // Event listeners for navigation buttons
-			this.prevDayButton.addEventListener("click", () => {
+		this.prevDayButton.addEventListener("click", () => {
 				this.currentDate = this.findNearestAvailableDate(this.dataFormatter.formatDateForStorage(this.currentDate), -1);
 				this.updateDisplay();
-			  });
+		});
   
-			  this.nextDayButton.addEventListener("click", () => {
+		this.nextDayButton.addEventListener("click", () => {
 				this.currentDate = this.findNearestAvailableDate(this.dataFormatter.formatDateForStorage(this.currentDate), 1);
 				this.updateDisplay();
-			  });
+		});
   
 	  // Event listeners for action buttons
 	  document.getElementById("clearData").addEventListener("click", () => {
@@ -98,6 +98,14 @@ class UIManager {
 		e.preventDefault();
 		chrome.tabs.create({ url: chrome.runtime.getURL("src/logs/preferences.html") });  // Assuming options.html manages category preferences
 	});
+
+	// New Event listener for "Manage Categories" link
+	const openManageCategoriesLink = document.getElementById('open-manage-categories');
+	openManageCategoriesLink.addEventListener('click', (e) => {
+		e.preventDefault();
+		chrome.tabs.create({ url: chrome.runtime.getURL("src/logs/categories.html") }); // New categories management page
+	});
+
 	}
   
 	updateDisplay() {

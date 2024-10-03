@@ -1,0 +1,20 @@
+/* Import existing logs.css styles */
+@import url('logs.css');
+
+.header-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.categories-container {
+    margin: 20px;
+}
+
+#categories-list li {
+    margin-bottom: 10px;
+    list-style: none;
+}
+
+#add-category-form {
+    margin-bottom: 20px;
+}

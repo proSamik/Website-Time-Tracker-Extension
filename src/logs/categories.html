@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Categories - Website Time Tracker</title>
+    <link rel="stylesheet" href="categories.css">
+</head>
+<body>
+    <div class="header-container">
+        <h1>Manage Categories</h1>
+        <div class="navigation">
+            <button id="go-to-preferences">Manage Preferences</button>
+            <button id="go-to-logs">Manage Daily Logs</button>
+        </div>
+    </div>
+
+    <!-- Form to Add or Edit Categories -->
+    <div class="categories-container">
+        <h2>Categories List</h2>
+        <form id="add-category-form">
+            <input type="text" id="category-name" placeholder="Category Name" required>
+            <input type="color" id="category-color" value="#4CAF50" required> <!-- Default to Light Green -->
+            <button type="submit">Add Category</button>
+        </form>
+
+        <ul id="categories-list">
+            <!-- Dynamically populated category list will go here -->
+        </ul>
+    </div>
+
+    <script src="categories.js"></script>
+</body>
+</html>
