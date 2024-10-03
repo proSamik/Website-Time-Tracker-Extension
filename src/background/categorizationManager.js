@@ -15,23 +15,17 @@ export class CategorizationManager {
     switch (scope) {
       case "url":
         this.storageManager.categoryPreferences.urls[normalizedUrl] = category;
-        console.log(`CategorizationManager: Saved under 'urls': ${normalizedUrl} -> ${category}`);
         break;
       case "exact":
         this.storageManager.categoryPreferences.exactDomains[hostname] = category;
-        console.log(`CategorizationManager: Saved under 'exactDomains': ${hostname} -> ${category}`);
         break;
       case "subdomains":
         this.storageManager.categoryPreferences.subdomains[hostname] = category;
-        console.log(`CategorizationManager: Saved under 'subdomains': ${hostname} -> ${category}`);
         break;
       case "domain":
         const rootDomain = getRootDomain(hostname);
         this.storageManager.categoryPreferences.rootDomains[rootDomain] = category;
-        console.log(`CategorizationManager: Saved under 'rootDomains': ${rootDomain} -> ${category}`);
         break;
-      default:
-        console.warn(`CategorizationManager: Unknown scope '${scope}'`);
     }
 
     this.storageManager.saveCategoryPreferences();

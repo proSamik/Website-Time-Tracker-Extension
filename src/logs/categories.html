@@ -14,17 +14,35 @@
         </div>
     </div>
 
-    <!-- Form to Add or Edit Categories -->
     <div class="categories-container">
         <h2>Categories List</h2>
+        
+        <!-- Category Limit Warning -->
+        <div id="category-limit-warning" style="display: none; color: red; margin-bottom: 10px;">
+            You can only add up to 4 custom categories. Minimum 2 categories are required.
+        </div>
+
+        <!-- Add/Edit Category Form -->
         <form id="add-category-form">
             <input type="text" id="category-name" placeholder="Category Name" required>
-            <input type="color" id="category-color" value="#4CAF50" required> <!-- Default to Light Green -->
-            <button type="submit">Add Category</button>
+            <input type="color" id="category-color" value="#4CAF50" required> <!-- Default color -->
+
+            <button type="submit" id="add-update-button">Add Category</button>
+            <button type="button" id="cancel-edit" style="display: none;">Cancel</button>
         </form>
 
+        <!-- Category List -->
         <ul id="categories-list">
             <!-- Dynamically populated category list will go here -->
+        </ul>
+
+        <!-- Disabled if max limit reached -->
+        <button id="add-more-button" disabled>Add More Categories</button>
+
+        <!-- Old Categories List for Future Reference -->
+        <h2>Old Categories List</h2>
+        <ul id="old-categories-list">
+            <!-- Old categories will be populated here -->
         </ul>
     </div>
 
