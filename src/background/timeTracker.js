@@ -1,4 +1,4 @@
-import { getCurrentDate, formatTime, padZero, getRootDomain } from './utils.js';
+import { getCurrentDate, formatTime, getRootDomain } from './utils.js';
 import CategorizationManager from './categorizationManager.js';
 
 export class TimeTracker {
@@ -87,62 +87,46 @@ export class TimeTracker {
     }
 
     handleTabChange(tab) {
-      const url = tab.url;
-      if (!url) {
-        console.log("TimeTracker: No URL found for the active tab.");
-        return;
-      }
-    
-      console.log(`TimeTracker: Active tab changed to ${url}`);
-    
-      if (!this.isValidUrl(url)) {
-        console.log(`TimeTracker: URL ${url} is not valid for content scripts.`);
-        return;
-      }
-    
-      const urlCategorized = this.categorizationManager.isUrlCategorized(url);
-      console.log(`TimeTracker: URL categorized? ${urlCategorized}`);
-    
-      const shouldPrompt = !urlCategorized;
-    
-      if (shouldPrompt) {
-        console.log(`TimeTracker: Sending promptCategorization message to content script for ${url}`);
-        chrome.tabs.sendMessage(tab.id, {
-          action: "promptCategorization",
-          url: url,
-          isDomain: false
-        }, (response) => {
-          if (chrome.runtime.lastError) {
-            console.error('TimeTracker: Error sending message:', chrome.runtime.lastError.message);
-            chrome.scripting.executeScript({
-              target: { tabId: tab.id },
-              files: ['src/content.js']
-            }, (injectionResults) => {
-              if (chrome.runtime.lastError) {
-                console.error('TimeTracker: Failed to inject content script:', chrome.runtime.lastError.message);
-              } else if (injectionResults && injectionResults.length > 0) {
-                console.log('TimeTracker: Content script injected, retrying message sending.');
-                chrome.tabs.sendMessage(tab.id, {
-                  action: "promptCategorization",
-                  url: url,
-                  isDomain: false
-                });
-              } else {
-                console.error('TimeTracker: Failed to inject content script for unknown reasons.');
-              }
+        const url = tab.url;
+        if (!url) {
+            console.log("TimeTracker: No URL found for the active tab.");
+            return;
+        }
+
+        console.log(`TimeTracker: Active tab changed to ${url}`);
+
+        if (!this.isValidUrl(url)) {
+            console.log(`TimeTracker: URL ${url} is not valid for content scripts.`);
+            return;
+        }
+
+        const urlCategorized = this.categorizationManager.isUrlCategorized(url);
+        console.log(`TimeTracker: URL categorized? ${urlCategorized}`);
+
+        const shouldPrompt = !urlCategorized;
+
+        if (shouldPrompt) {
+            console.log(`TimeTracker: Sending promptCategorization message to content script for ${url}`);
+            chrome.tabs.sendMessage(tab.id, {
+                action: "promptCategorization",
+                url: url,
+                isDomain: false
+            }, (response) => {
+                if (chrome.runtime.lastError) {
+                    console.error('TimeTracker: Error sending message:', chrome.runtime.lastError.message);
+                } else {
+                    console.log('TimeTracker: promptCategorization message sent successfully.');
+                }
             });
-          } else {
-            console.log('TimeTracker: promptCategorization message sent successfully.');
-          }
-        });
-      }
-    
-      if (this.active) {
-        this.handleTabInactive();
-      }
-      this.active = true;
-      this.startTime = Date.now();
-      console.log(`TimeTracker: Started tracking time for ${url}`);
+        }
+
+        if (this.active) {
+            this.handleTabInactive();
+        }
+        this.active = true;
+        this.startTime = Date.now();
+        this.currentUrl = url;
+        console.log(`TimeTracker: Started tracking time for ${url}`);
     }
 
     handleTabInactive() {
@@ -152,11 +136,11 @@ export class TimeTracker {
 
             let category = this.categorizationManager.getCategoryForUrl(this.currentUrl);
 
-            if (category === 'neutral' && !this.categorizationManager.isUrlCategorized(this.currentUrl)) {
+            if (!category) {
                 category = 'uncategorized';
             }
 
-            console.log(`TimeTracker: Tracking time for date ${date} and URL ${this.currentUrl}`);
+            console.log(`TimeTracker: Saving time for date ${date} and URL ${this.currentUrl} under category ${category}`);
 
             if (!this.storageManager.timeData[date]) {
                 this.storageManager.timeData[date] = {};
@@ -207,20 +191,6 @@ export class TimeTracker {
             console.error(`TimeTracker: Invalid URL - ${url}`);
             return false;
         }
-    }
-
-    getRootDomain(hostname) {
-        const parts = hostname.split('.').reverse();
-        if (parts.length >= 3) {
-            const secondLevelDomains = ['co', 'com', 'net', 'org', 'gov', 'ac'];
-            if (secondLevelDomains.includes(parts[1]) && parts.length >= 4) {
-                return `${parts[3]}.${parts[2]}.${parts[1]}`;
-            }
-            return `${parts[2]}.${parts[1]}`;
-        } else if (parts.length === 2) {
-            return `${parts[1]}.${parts[0]}`;
-        }
-        return hostname;
     }
 
     reallocateTime(url, newCategory, scope) {

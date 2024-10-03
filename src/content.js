@@ -120,7 +120,6 @@ class PromptManager {
 		chrome.storage.local.get(['categories'], (data) => {
 			const categories = data.categories || [];
   
-			// Dynamically add buttons for all categories except "Uncategorized"
 			categories.forEach((category) => {
 				if (category.name.toLowerCase() !== "uncategorized") { // Skip Uncategorized
 					const button = document.createElement('button');

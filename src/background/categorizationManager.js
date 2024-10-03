@@ -7,7 +7,7 @@ export class CategorizationManager {
     this.storageManager = storageManager;
   }
 
-  saveCategorization(url, category, scope) {
+    saveCategorization(url, category, scope) {
     const normalizedUrl = url.toLowerCase();
     const urlObj = new URL(normalizedUrl);
     const hostname = urlObj.hostname.toLowerCase();
