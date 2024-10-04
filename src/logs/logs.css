@@ -11,10 +11,11 @@ body {
 .header-container {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     padding: 20px;
     background-color: #00215E; /* Navy Blue */
     color: white;
+    gap: 15px;
 }
 
 .header-container h1 {
@@ -140,6 +141,23 @@ body {
 .log-url:hover {
     text-decoration: underline;
     color: #FC4100; /* Orange on hover */
+}
+
+.log-item:hover .log-url {
+    text-decoration: underline;
+    color: #FC4100; /* Orange on hover */
+}
+
+.time-span {
+    margin-left: 10px;
+    color: #555;
+    font-size: 0.9em;
+}
+
+.no-logs {
+    text-align: center;
+    color: #666;
+    padding: 20px 0;
 }
 
 .update-button {

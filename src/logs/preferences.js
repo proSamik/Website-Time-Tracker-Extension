@@ -4,9 +4,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const goToLogsButton = document.getElementById('go-to-logs');
     const deleteSelectedButton = document.getElementById('delete-selected');
     const addPreferenceForm = document.getElementById('add-preference-form');
+    const goToCategoriesButton = document.getElementById('go-to-categories');
 
     goToLogsButton.addEventListener('click', () => {
         window.location.href = 'logs.html';
+    });
+
+    goToCategoriesButton.addEventListener('click', () => {
+        window.location.href = 'categories.html';
     });
 
     deleteSelectedButton.addEventListener('click', () => {
@@ -119,8 +124,17 @@ function populatePreferenceList(categoryType, preferences, categories) {
         const urlLink = document.createElement('a');
         urlLink.href = url;
         urlLink.target = '_blank';
-        urlLink.textContent = url;
         urlLink.classList.add('preference-url');
+
+        // Truncate URL to 50 characters
+        let displayUrl = url;
+        if (url.length > 50) {
+            displayUrl = url.substring(0, 47) + '...';
+        }
+        urlLink.textContent = displayUrl;
+
+        // Set title attribute to show full URL on hover
+        urlLink.title = url;
 
         // Assigned Category Display
         const assignedCategory = preferences[url];

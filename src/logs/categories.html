@@ -15,35 +15,69 @@
     </div>
 
     <div class="categories-container">
-        <h2>Categories List</h2>
-        
+        <!-- Uncategorized Category Table -->
+        <h2>Default Category</h2>
+        <table id="uncategorized-table">
+            <thead>
+                <tr>
+                    <th>Color</th>
+                    <th>Color Code</th>
+                    <th>Category Name</th>
+                </tr>
+            </thead>
+            <tbody id="uncategorized-list">
+                <!-- Uncategorized category will be displayed here -->
+            </tbody>
+        </table>
+
         <!-- Category Limit Warning -->
-        <div id="category-limit-warning" style="display: none; color: red; margin-bottom: 10px;">
+        <div id="category-limit-warning" style="display: none;">
             You can only add up to 4 custom categories. Minimum 2 categories are required.
         </div>
 
         <!-- Add/Edit Category Form -->
         <form id="add-category-form">
-            <input type="text" id="category-name" placeholder="Category Name" required>
-            <input type="color" id="category-color" value="#4CAF50" required> <!-- Default color -->
+            <label for="category-name">Category Name:</label>
+            <input type="text" id="category-name" placeholder="Enter Category Name" required>
+            
+            <label for="category-color">Select Color:</label>
+            <input type="color" id="category-color" value="#4CAF50" required>
+            <input type="text" id="category-color-hex" placeholder="#4CAF50" pattern="^#([A-Fa-f0-9]{6})$" required>
 
             <button type="submit" id="add-update-button">Add Category</button>
             <button type="button" id="cancel-edit" style="display: none;">Cancel</button>
         </form>
 
-        <!-- Category List -->
-        <ul id="categories-list">
-            <!-- Dynamically populated category list will go here -->
-        </ul>
+        <!-- Categories List (excluding Uncategorized) -->
+        <h2>Categories List</h2>
+        <table id="categories-table">
+            <thead>
+                <tr>
+                    <th>Color</th>
+                    <th>Color Code</th>
+                    <th>Category Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="categories-list">
+                <!-- Dynamically populated category list will go here -->
+            </tbody>
+        </table>
 
-        <!-- Disabled if max limit reached -->
-        <button id="add-more-button" disabled>Add More Categories</button>
-
-        <!-- Old Categories List for Future Reference -->
+        <!-- Old Categories List -->
         <h2>Old Categories List</h2>
-        <ul id="old-categories-list">
-            <!-- Old categories will be populated here -->
-        </ul>
+        <table id="old-categories-table">
+            <thead>
+                <tr>
+                    <th>Color</th>
+                    <th>Color Code</th>
+                    <th>Category Name</th>
+                </tr>
+            </thead>
+            <tbody id="old-categories-list">
+                <!-- Old categories will be populated here -->
+            </tbody>
+        </table>
     </div>
 
     <script src="categories.js"></script>

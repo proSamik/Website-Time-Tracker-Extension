@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const moveSelectedButton = document.getElementById('move-selected');
     const moveCategorySelect = document.getElementById('move-category');
     const goToPreferencesButton = document.getElementById('go-to-preferences'); 
+    const goToCategoriesButton = document.getElementById('go-to-categories');
 
     // Initialize date input to today's date
     const today = new Date().toISOString().split('T')[0];
@@ -44,6 +45,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Event listener for "Manage Preferences" button to navigate to preferences.html
         goToPreferencesButton.addEventListener('click', () => {
             window.location.href = 'preferences.html';  // Navigate to the preferences page
+        });
+
+        goToCategoriesButton.addEventListener('click', () => {
+            window.location.href = 'categories.html';
         });
     });
 });
@@ -285,8 +290,17 @@ function populateCategoryList(category, logs) {
         const urlLink = document.createElement('a');
         urlLink.href = log.url;
         urlLink.target = '_blank';
-        urlLink.textContent = log.url;
         urlLink.classList.add('log-url');
+
+        // Truncate URL to 50 characters
+        let displayUrl = log.url;
+        if (log.url.length > 50) {
+            displayUrl = log.url.substring(0, 47) + '...';
+        }
+        urlLink.textContent = displayUrl;
+
+        // Set title attribute to show full URL on hover
+        urlLink.title = log.url;
 
         // Time Spent Display
         const timeSpan = document.createElement('span');

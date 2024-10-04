@@ -157,6 +157,11 @@
     border-bottom: none;
 }
 
+.preference-item:hover .preference-url {
+    text-decoration: underline;
+    color: #FC4100; /* Orange on hover */
+}
+
 .preference-item input[type="checkbox"] {
     margin-right: 10px;
     cursor: pointer;
