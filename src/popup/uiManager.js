@@ -74,7 +74,7 @@ class UIManager {
   
 	  document.getElementById("resetSettings").addEventListener("click", () => {
 		if (confirm("Are you sure you want to reset all settings? This will erase all data.")) {
-		  this.storageHandler.resetSettings(() => {
+		  chrome.runtime.sendMessage({ action: "resetData" }, (response) => {
 			console.log("All settings and data reset.");
 			location.reload();
 		  });
@@ -129,9 +129,18 @@ class UIManager {
 		// Check and disable navigation buttons
 		this.checkNavigationButtons();
 	
-		// Load time data
-		chrome.storage.local.get("timeData", (data) => {
+		// Load time data and categories
+		chrome.storage.local.get(["timeData", "categories", "oldCategories"], (data) => {
 		  const timeData = data.timeData || {};
+		  const categories = data.categories || [];
+		  const oldCategories = data.oldCategories || [];
+	
+		  // Create a mapping from category names to colors
+		  const categoryColors = {};
+		  const allCategories = categories.concat(oldCategories);
+		  allCategories.forEach(category => {
+			categoryColors[category.name.toLowerCase()] = category.color;
+		  });
 	
 		  if (timeData[dateString]) {
 			const dateData = timeData[dateString];
@@ -148,13 +157,13 @@ class UIManager {
 	
 			this.totalTimeElem.textContent = `Total time: ${this.dataFormatter.formatTime(totalTime)}`;
 	
-			this.listManager.renderList(this.timeList, dateData);
-			this.chartManager.createTimeChart(categoryTotals);
+			this.listManager.renderList(this.timeList, dateData); // No need to pass categoryColors if not used
+			this.chartManager.createTimeChart(categoryTotals, categoryColors);
 		  } else {
 			this.displayNoData();
 		  }
 		});
-	  }
+	}
 	
 	  findNearestAvailableDate(currentDateString, direction) {
 		const currentIndex = this.availableDates.indexOf(currentDateString);

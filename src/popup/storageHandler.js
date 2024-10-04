@@ -32,10 +32,13 @@ class StorageHandler {
 	  chrome.storage.local.clear(() => {
 		console.log("StorageHandler: All settings and data reset.");
 		this.timeData = {};
-		if (callback) callback();
+		// Send message to background script to reinitialize
+		chrome.runtime.sendMessage({ action: 'initialize' }, (response) => {
+		  if (callback) callback();
+		});
 	  });
 	}
   }
   
   // Make StorageHandler globally accessible
-  window.StorageHandler = new StorageHandler();  
+  window.StorageHandler = new StorageHandler();

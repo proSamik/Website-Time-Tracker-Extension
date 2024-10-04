@@ -26,6 +26,19 @@ function initializeDefaultCategories() {
     });
 }
 
+function initializeData() {
+	chrome.storage.local.set({ categories: defaultCategories, timeData: {} }, () => {
+	  console.log('Data initialized with default categories and cleared timeData.');
+	});
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+	if (message.action === "resetData") {
+	  initializeData();
+	  sendResponse({ status: "success" });
+	}
+});
+
 // Run this when the extension is installed or updated
 chrome.runtime.onInstalled.addListener((details) => {
     console.log("Background/index.js: Extension installed or updated", details);
