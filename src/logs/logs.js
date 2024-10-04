@@ -7,56 +7,83 @@ document.addEventListener('DOMContentLoaded', () => {
     const moveCategorySelect = document.getElementById('move-category');
     const goToPreferencesButton = document.getElementById('go-to-preferences'); 
 
-
     // Initialize date input to today's date
     const today = new Date().toISOString().split('T')[0];
     logDateInput.value = today;
 
-    loadLogsButton.addEventListener('click', () => {
-        const selectedDate = logDateInput.value;
-        if (!selectedDate) {
-            alert('Please select a date.');
-            return;
-        }
-        loadLogs(selectedDate);
-    });
-    
-    // Load logs on initial load
-    loadLogs(today);
+    // Fetch all categories for moveCategorySelect
+    chrome.storage.local.get(['categories', 'oldCategories'], (data) => {
+        const categories = data.categories || [];
+        const oldCategories = data.oldCategories || [];
+        const allCategories = [...categories, ...oldCategories];
 
-    // Event listener for moving selected URLs
-    moveSelectedButton.addEventListener('click', () => {
-        const selectedCategory = moveCategorySelect.value;
-        if (!selectedCategory) {
-            alert('Please select a target category to move the selected URLs.');
-            return;
-        }
-        moveSelectedLogs(selectedCategory);
-    });
+        initializeMoveCategorySelect(allCategories);
 
-     // Event listener for "Manage Preferences" button to navigate to preferences.html
-     goToPreferencesButton.addEventListener('click', () => {
-        window.location.href = 'preferences.html';  // Navigate to the preferences page
+        // Load logs on initial load
+        loadLogs(today);
+
+        loadLogsButton.addEventListener('click', () => {
+            const selectedDate = logDateInput.value;
+            if (!selectedDate) {
+                alert('Please select a date.');
+                return;
+            }
+            loadLogs(selectedDate);
+        });
+
+        // Event listener for moving selected URLs
+        moveSelectedButton.addEventListener('click', () => {
+            const selectedCategory = moveCategorySelect.value;
+            if (!selectedCategory) {
+                alert('Please select a target category to move the selected URLs.');
+                return;
+            }
+            moveSelectedLogs(selectedCategory);
+        });
+
+        // Event listener for "Manage Preferences" button to navigate to preferences.html
+        goToPreferencesButton.addEventListener('click', () => {
+            window.location.href = 'preferences.html';  // Navigate to the preferences page
+        });
     });
 });
+
+/**
+ * Initializes the move category select options.
+ * @param {Array} categories - Array of category objects.
+ */
+function initializeMoveCategorySelect(categories) {
+    const moveCategorySelect = document.getElementById('move-category');
+    moveCategorySelect.innerHTML = ''; // Clear existing options
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    defaultOption.textContent = 'Move selected to...';
+    moveCategorySelect.appendChild(defaultOption);
+
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.name.toLowerCase();
+        option.textContent = capitalizeFirstLetter(category.name);
+        moveCategorySelect.appendChild(option);
+    });
+
+    // Ensure 'uncategorized' option exists
+    if (!categories.some(category => category.name.toLowerCase() === 'uncategorized')) {
+        const option = document.createElement('option');
+        option.value = 'uncategorized';
+        option.textContent = 'Uncategorized';
+        moveCategorySelect.appendChild(option);
+    }
+}
 
 /**
  * Loads logs for the specified date and displays them.
  * @param {string} date - Date in YYYY-MM-DD format.
  */
 function loadLogs(date) {
-    // Get the individual category lists
-    const productiveList = document.getElementById('productive-list');
-    const neutralList = document.getElementById('neutral-list');
-    const entertainmentList = document.getElementById('entertainment-list');
-    const uncategorizedList = document.getElementById('uncategorized-list');
-
-    // Clear existing lists
-    productiveList.innerHTML = '';
-    neutralList.innerHTML = '';
-    entertainmentList.innerHTML = '';
-    uncategorizedList.innerHTML = '';
-
     chrome.storage.local.get(['timeData'], (data) => {
         const timeData = data.timeData || {};
 
@@ -65,14 +92,40 @@ function loadLogs(date) {
 
         if (!timeData[date]) {
             const formattedDate = formatDateDisplay(date);
-            productiveList.innerHTML = `<li class="no-logs">No logs available for ${formattedDate}.</li>`;
-            neutralList.innerHTML = `<li class="no-logs">No logs available for ${formattedDate}.</li>`;
-            entertainmentList.innerHTML = `<li class="no-logs">No logs available for ${formattedDate}.</li>`;
-            uncategorizedList.innerHTML = `<li class="no-logs">No logs available for ${formattedDate}.</li>`;
+            const logsContainer = document.getElementById('logs-container');
+            logsContainer.innerHTML = `<p>No logs available for ${formattedDate}.</p>`;
             return;
         }
 
         const dateData = timeData[date];
+
+        // Get categories from dateData
+        const categoriesForDate = Object.keys(dateData).map(categoryName => {
+            return { name: categoryName };
+        });
+
+        // Initialize category columns based on categoriesForDate
+        initializeCategoryColumns(categoriesForDate);
+
+        // Get category lists dynamically
+        const categoryLists = {};
+
+        categoriesForDate.forEach(category => {
+            const categoryName = category.name.toLowerCase();
+            categoryLists[categoryName] = document.getElementById(`${categoryName}-list`);
+            // Clear existing lists
+            categoryLists[categoryName].innerHTML = '';
+        });
+
+        // Ensure 'uncategorized' list exists
+        if (!categoryLists['uncategorized'] && dateData['uncategorized']) {
+            const uncategorizedList = document.getElementById('uncategorized-list');
+            if (uncategorizedList) {
+                categoryLists['uncategorized'] = uncategorizedList;
+                uncategorizedList.innerHTML = '';
+            }
+        }
+
         const allLogs = [];
 
         // Aggregate all logs into a single array
@@ -88,33 +141,42 @@ function loadLogs(date) {
 
         console.log('All Logs before sorting:', allLogs);
 
-        // Sort logs by last accessed (descending)
-        allLogs.sort((a, b) => b.time - a.time); // Most recent first
+        // Sort logs by time spent (descending)
+        allLogs.sort((a, b) => b.time - a.time); // Longest time first
 
         console.log('All Logs after sorting:', allLogs);
 
         if (allLogs.length === 0) {
             const formattedDate = formatDateDisplay(date);
-            productiveList.innerHTML = `<li class="no-logs">No logs available for ${formattedDate}.</li>`;
-            neutralList.innerHTML = `<li class="no-logs">No logs available for ${formattedDate}.</li>`;
-            entertainmentList.innerHTML = `<li class="no-logs">No logs available for ${formattedDate}.</li>`;
-            uncategorizedList.innerHTML = `<li class="no-logs">No logs available for ${formattedDate}.</li>`;
+            Object.values(categoryLists).forEach(list => {
+                list.innerHTML = `<li class="no-logs">No logs available for ${formattedDate}.</li>`;
+            });
             return;
         }
 
-        // Categorize logs
-        const categorizedLogs = {
-            productive: [],
-            neutral: [],
-            entertainment: [],
-            uncategorized: []
-        };
+        // Categorize logs dynamically
+        const categorizedLogs = {};
+
+        // Initialize categorizedLogs for each category
+        categoriesForDate.forEach(category => {
+            const categoryName = category.name.toLowerCase();
+            categorizedLogs[categoryName] = [];
+        });
+
+        // Also handle 'uncategorized' if present
+        if (dateData['uncategorized']) {
+            categorizedLogs['uncategorized'] = [];
+        }
 
         allLogs.forEach(log => {
             const category = log.category.toLowerCase();
             if (categorizedLogs.hasOwnProperty(category)) {
                 categorizedLogs[category].push(log);
             } else {
+                // Handle uncategorized logs
+                if (!categorizedLogs['uncategorized']) {
+                    categorizedLogs['uncategorized'] = [];
+                }
                 categorizedLogs['uncategorized'].push(log);
             }
         });
@@ -122,22 +184,83 @@ function loadLogs(date) {
         console.log('Categorized Logs:', categorizedLogs);
 
         // Populate each category column
-        populateCategoryList('productive', categorizedLogs['productive']);
-        populateCategoryList('neutral', categorizedLogs['neutral']);
-        populateCategoryList('entertainment', categorizedLogs['entertainment']);
-        populateCategoryList('uncategorized', categorizedLogs['uncategorized']);
+        Object.keys(categorizedLogs).forEach(categoryName => {
+            populateCategoryList(categoryName, categorizedLogs[categoryName]);
+        });
 
         console.log('Logs successfully loaded and displayed.');
     });
 }
 
 /**
+ * Initializes the category columns in the logs container.
+ * @param {Array} categories - Array of category objects.
+ */
+function initializeCategoryColumns(categories) {
+    const logsContainer = document.getElementById('logs-container');
+    logsContainer.innerHTML = ''; // Clear existing content
+
+    categories.forEach(category => {
+        const categoryName = category.name.toLowerCase();
+        const displayName = capitalizeFirstLetter(category.name);
+
+        const columnDiv = document.createElement('div');
+        columnDiv.classList.add('category-column');
+        columnDiv.id = `${categoryName}-column`;
+
+        const heading = document.createElement('h2');
+        heading.textContent = displayName;
+
+        const ul = document.createElement('ul');
+        ul.classList.add('log-list');
+        ul.id = `${categoryName}-list`;
+
+        columnDiv.appendChild(heading);
+        columnDiv.appendChild(ul);
+
+        logsContainer.appendChild(columnDiv);
+    });
+
+    // Ensure 'uncategorized' category exists if there's data
+    if (!categories.some(category => category.name.toLowerCase() === 'uncategorized')) {
+        chrome.storage.local.get(['timeData'], (data) => {
+            const timeData = data.timeData || {};
+            const currentDate = getCurrentDate();
+            const dateData = timeData[currentDate] || {};
+
+            if (dateData['uncategorized']) {
+                const columnDiv = document.createElement('div');
+                columnDiv.classList.add('category-column');
+                columnDiv.id = `uncategorized-column`;
+
+                const heading = document.createElement('h2');
+                heading.textContent = 'Uncategorized';
+
+                const ul = document.createElement('ul');
+                ul.classList.add('log-list');
+                ul.id = `uncategorized-list`;
+
+                columnDiv.appendChild(heading);
+                columnDiv.appendChild(ul);
+
+                logsContainer.appendChild(columnDiv);
+            }
+        });
+    }
+}
+
+/**
  * Populates a specific category list with logs.
- * @param {string} category - The category name (productive, neutral, entertainment, uncategorized).
+ * @param {string} category - The category name.
  * @param {Array} logs - Array of log objects.
  */
 function populateCategoryList(category, logs) {
     const listElement = document.getElementById(`${category}-list`);
+
+    if (!listElement) {
+        console.warn(`List element for category '${category}' not found.`);
+        return;
+    }
 
     if (logs.length === 0) {
         const emptyMsg = document.createElement('li');
@@ -165,9 +288,17 @@ function populateCategoryList(category, logs) {
         urlLink.textContent = log.url;
         urlLink.classList.add('log-url');
 
-        // Append checkbox and URL to the list item
+        // Time Spent Display
+        const timeSpan = document.createElement('span');
+        timeSpan.textContent = ` - ${formatTime(log.time)}`;
+        timeSpan.style.marginLeft = '10px';
+        timeSpan.style.color = '#555';
+        timeSpan.style.fontSize = '0.9em';
+
+        // Append checkbox, URL, and time to the list item
         logItem.appendChild(checkbox);
         logItem.appendChild(urlLink);
+        logItem.appendChild(timeSpan);
 
         listElement.appendChild(logItem);
     });
@@ -245,6 +376,19 @@ function formatDateDisplay(dateStr) {
     const options = { year: 'numeric', month: 'long', day: 'numeric' };
     const dateObj = new Date(dateStr);
     return dateObj.toLocaleDateString(undefined, options);
+}
+
+/**
+ * Formats time in milliseconds to HH:MM:SS format.
+ * @param {number} ms - Time in milliseconds.
+ * @returns {string} Formatted time string.
+ */
+function formatTime(ms) {
+    const totalSeconds = Math.floor(ms / 1000);
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60);
+    const s = totalSeconds % 60;
+    return `${h}h ${m}m ${s}s`;
 }
 
 /**

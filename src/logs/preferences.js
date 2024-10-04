@@ -18,16 +18,55 @@ document.addEventListener('DOMContentLoaded', () => {
         addNewPreferences();
     });
 
-    // Update placeholder to show new lines (optional)
-    document.getElementById("new-urls").placeholder = "URLs/Domains\n(multiple comma separated)\n";
+    // Fetch categories and initialize assigned-category select
+    chrome.storage.local.get(['categories', 'oldCategories'], (data) => {
+        const categories = data.categories || [];
+        const oldCategories = data.oldCategories || [];
+        const allCategories = [...categories, ...oldCategories];
 
-    loadPreferences();
+        initializeAssignedCategorySelect(allCategories);
+
+        // Load preferences after initializing assigned-category select
+        loadPreferences(allCategories);
+    });
 });
 
 /**
- * Loads category preferences and displays them in their respective lists.
+ * Initializes the assigned-category select options.
+ * @param {Array} categories - Array of category objects.
  */
-function loadPreferences() {
+function initializeAssignedCategorySelect(categories) {
+    const assignedCategorySelect = document.getElementById('assigned-category');
+    assignedCategorySelect.innerHTML = ''; // Clear existing options
+
+    const defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.disabled = true;
+    defaultOption.selected = true;
+    defaultOption.textContent = 'Select Assigned Category';
+    assignedCategorySelect.appendChild(defaultOption);
+
+    categories.forEach(category => {
+        const option = document.createElement('option');
+        option.value = category.name.toLowerCase();
+        option.textContent = capitalizeFirstLetter(category.name);
+        assignedCategorySelect.appendChild(option);
+    });
+
+    // Ensure 'uncategorized' option exists
+    if (!categories.some(category => category.name.toLowerCase() === 'uncategorized')) {
+        const option = document.createElement('option');
+        option.value = 'uncategorized';
+        option.textContent = 'Uncategorized';
+        assignedCategorySelect.appendChild(option);
+    }
+}
+
+/**
+ * Loads category preferences and displays them in their respective lists.
+ * @param {Array} categories - Array of category objects.
+ */
+function loadPreferences(categories) {
     chrome.storage.local.get(['categoryPreferences'], (data) => {
         const categoryPreferences = data.categoryPreferences || {
             urls: {},
@@ -38,20 +77,21 @@ function loadPreferences() {
 
         console.log('Loaded categoryPreferences:', categoryPreferences);
 
-        populatePreferenceList('urls', categoryPreferences.urls);
-        populatePreferenceList('exactDomains', categoryPreferences.exactDomains);
-        populatePreferenceList('subdomains', categoryPreferences.subdomains);
-        populatePreferenceList('rootDomains', categoryPreferences.rootDomains);
+        populatePreferenceList('urls', categoryPreferences.urls, categories);
+        populatePreferenceList('exactDomains', categoryPreferences.exactDomains, categories);
+        populatePreferenceList('subdomains', categoryPreferences.subdomains, categories);
+        populatePreferenceList('rootDomains', categoryPreferences.rootDomains, categories);
     });
 }
 
 /**
  * Populates a specific category list with preferences.
- * @param {string} category - The category name (urls, exactDomains, subdomains, rootDomains).
+ * @param {string} categoryType - The category type (urls, exactDomains, subdomains, rootDomains).
  * @param {Object} preferences - The preferences object containing URLs.
+ * @param {Array} categories - Array of category objects.
  */
-function populatePreferenceList(category, preferences) {
-    const listElement = document.getElementById(`${category}-list`);
+function populatePreferenceList(categoryType, preferences, categories) {
+    const listElement = document.getElementById(`${categoryType}-list`);
     listElement.innerHTML = ''; // Clear existing entries
 
     const entries = Object.keys(preferences);
@@ -72,7 +112,7 @@ function populatePreferenceList(category, preferences) {
         const checkbox = document.createElement('input');
         checkbox.type = 'checkbox';
         checkbox.classList.add('preference-checkbox');
-        checkbox.dataset.category = category;
+        checkbox.dataset.category = categoryType;
         checkbox.dataset.url = url;
 
         // URL Display
@@ -82,9 +122,12 @@ function populatePreferenceList(category, preferences) {
         urlLink.textContent = url;
         urlLink.classList.add('preference-url');
 
-        // Assigned Category Display (Optional)
+        // Assigned Category Display
+        const assignedCategory = preferences[url];
+        const categoryDisplayName = capitalizeFirstLetter(assignedCategory);
+
         const categorySpan = document.createElement('span');
-        categorySpan.textContent = `(${preferences[url]})`;
+        categorySpan.textContent = ` (${categoryDisplayName})`;
         categorySpan.style.marginLeft = '10px';
         categorySpan.style.color = '#555';
         categorySpan.style.fontSize = '0.9em';
@@ -94,54 +137,6 @@ function populatePreferenceList(category, preferences) {
         listItem.appendChild(categorySpan); // Display assigned category
 
         listElement.appendChild(listItem);
-    });
-}
-
-/**
- * Deletes selected preferences from their respective categories.
- */
-function deleteSelectedPreferences() {
-    const checkboxes = document.querySelectorAll('.preference-checkbox:checked');
-
-    if (checkboxes.length === 0) {
-        alert('Please select at least one URL to delete.');
-        return;
-    }
-
-    const selectedPreferences = Array.from(checkboxes).map(cb => ({
-        category: cb.dataset.category,
-        url: cb.dataset.url
-    }));
-
-    console.log('Selected preferences to delete:', selectedPreferences);
-
-    // Confirmation Prompt
-    if (!confirm(`Are you sure you want to delete ${selectedPreferences.length} selected preference(s)? This will prompt categorization again when these URLs are visited.`)) {
-        return;
-    }
-
-    chrome.storage.local.get(['categoryPreferences'], (data) => {
-        let categoryPreferences = data.categoryPreferences || {
-            urls: {},
-            exactDomains: {},
-            subdomains: {},
-            rootDomains: {}
-        };
-
-        selectedPreferences.forEach(item => {
-            const { category, url } = item;
-            if (categoryPreferences[category] && categoryPreferences[category][url]) {
-                delete categoryPreferences[category][url];
-                console.log(`Deleted ${url} from ${category}`);
-            }
-        });
-
-        // Save updated categoryPreferences back to storage
-        chrome.storage.local.set({ categoryPreferences }, () => {
-            console.log('Updated categoryPreferences:', categoryPreferences);
-            alert(`Deleted ${selectedPreferences.length} preference(s).`);
-            loadPreferences(); // Refresh the lists
-        });
     });
 }
 
@@ -207,22 +202,10 @@ function addNewPreferences() {
             }
 
             // Add to the selected category type with the assigned category
-            switch (selectedCategoryType) {
-                case 'urls':
-                    categoryPreferences.urls[url] = assignedCategory;
-                    break;
-                case 'exactDomains':
-                    categoryPreferences.exactDomains[url] = assignedCategory;
-                    break;
-                case 'subdomains':
-                    categoryPreferences.subdomains[url] = assignedCategory;
-                    break;
-                case 'rootDomains':
-                    categoryPreferences.rootDomains[url] = assignedCategory;
-                    break;
-                default:
-                    console.warn(`Invalid category type selected: ${selectedCategoryType}`);
+            if (!categoryPreferences[selectedCategoryType]) {
+                categoryPreferences[selectedCategoryType] = {};
             }
+            categoryPreferences[selectedCategoryType][url] = assignedCategory;
 
             addedCount++;
         });
@@ -235,12 +218,20 @@ function addNewPreferences() {
                 message += `\n\nThe following entries already exist and were skipped:\n- ${alreadyExists.join('\n- ')}`;
             }
             alert(message);
-            loadPreferences(); // Refresh the lists
 
-            // Clear the form inputs
-            newUrlsInput.value = '';
-            newCategorySelect.value = '';
-            assignedCategorySelect.value = '';
+            // Fetch categories again to refresh the lists
+            chrome.storage.local.get(['categories', 'oldCategories'], (data) => {
+                const categories = data.categories || [];
+                const oldCategories = data.oldCategories || [];
+                const allCategories = [...categories, ...oldCategories];
+
+                loadPreferences(allCategories); // Refresh the lists
+
+                // Clear the form inputs
+                newUrlsInput.value = '';
+                newCategorySelect.value = '';
+                assignedCategorySelect.value = '';
+            });
         });
     });
 }
@@ -253,10 +244,10 @@ function addNewPreferences() {
  */
 function isUrlAlreadyCategorized(categoryPreferences, url) {
     return (
-        categoryPreferences.urls.hasOwnProperty(url) ||
-        categoryPreferences.exactDomains.hasOwnProperty(url) ||
-        categoryPreferences.subdomains.hasOwnProperty(url) ||
-        categoryPreferences.rootDomains.hasOwnProperty(url)
+        categoryPreferences.urls && categoryPreferences.urls.hasOwnProperty(url) ||
+        categoryPreferences.exactDomains && categoryPreferences.exactDomains.hasOwnProperty(url) ||
+        categoryPreferences.subdomains && categoryPreferences.subdomains.hasOwnProperty(url) ||
+        categoryPreferences.rootDomains && categoryPreferences.rootDomains.hasOwnProperty(url)
     );
 }
 

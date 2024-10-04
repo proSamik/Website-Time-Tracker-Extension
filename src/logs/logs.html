@@ -20,40 +20,13 @@
     
     <div class="action-container">
         <select id="move-category">
-            <option value="" disabled selected>Move selected to...</option>
-            <option value="productive">Productive</option>
-            <option value="neutral">Neutral</option>
-            <option value="entertainment">Entertainment</option>
-            <option value="uncategorized">Uncategorized</option>
+            <!-- Options will be populated dynamically -->
         </select>
         <button id="move-selected">Move Selected</button>
     </div>
     
-    <div class="logs-container">
-        <div class="category-column" id="productive-column">
-            <h2>Productive</h2>
-            <ul class="log-list" id="productive-list">
-                <!-- Productive URLs will be inserted here -->
-            </ul>
-        </div>
-        <div class="category-column" id="neutral-column">
-            <h2>Neutral</h2>
-            <ul class="log-list" id="neutral-list">
-                <!-- Neutral URLs will be inserted here -->
-            </ul>
-        </div>
-        <div class="category-column" id="entertainment-column">
-            <h2>Entertainment</h2>
-            <ul class="log-list" id="entertainment-list">
-                <!-- Entertainment URLs will be inserted here -->
-            </ul>
-        </div>
-        <div class="category-column" id="uncategorized-column">
-            <h2>Uncategorized</h2>
-            <ul class="log-list" id="uncategorized-list">
-                <!-- Uncategorized URLs will be inserted here -->
-            </ul>
-        </div>
+    <div class="logs-container" id="logs-container">
+        <!-- Category columns will be dynamically inserted here -->
     </div>
     
     <script src="logs.js"></script>
